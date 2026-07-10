@@ -1,9 +1,10 @@
 # Reviewed PRD — Technical Blog & Reviews Site
 
-**Document Version:** 2.1
+**Document Version:** 2.2
 **Last Updated:** 2026-07-10
 **Supersedes:** [initial-technical-website-specification.md](./initial-technical-website-specification.md) (v1.0, 2026-01-20)
-**Project Status:** MVP scoping
+**Project Status:** Spec closed — ready for Day 1
+**Acceptance criteria:** [acceptance-criteria.md](./acceptance-criteria.md)
 **Author:** Gerardo Palazuelos
 
 ---
@@ -266,12 +267,14 @@ Must document:
 
 ---
 
-## 9. Open Questions (must resolve before Day 1)
+## 9. Open Questions — RESOLVED (v2.2, 2026-07-10)
 
-1. **Domain name** — is it registered? Where?
-2. **Google SSO email** — confirm `<redacted-admin-email>` is the sole admin.
-3. **Design direction** — greenfield CSS, Tailwind, or a Hugo theme (e.g., PaperMod) as starting point? Recommendation: fork a minimal theme for MVP, rewrite in Iteration 2 if it constrains.
-4. **First post** — is content drafted? Without a real post, the walking skeleton has nothing to walk.
+All four pre-Day-1 questions are closed:
+
+1. **Domain name** — ✅ Registered. Name and registrar to be provided at Day 1 DNS setup; specs use `<domain>` as placeholder until then. Not a blocker: Vercel connection and cert issuance happen on Day 1 regardless.
+2. **Google SSO email** — ✅ Confirmed: `<redacted-admin-email>` is the sole admin (Sanity project member, `administrator` role). Passkey/security-key 2FA enrollment per §2.2.1-2 is a Day 2 checklist item (acceptance criterion C4).
+3. **Design direction** — ✅ **Fork PaperMod** as the MVP starting point (the recommended option). Rewrite only in a later iteration if it constrains. Appendix A updated.
+4. **First post** — ✅ Topic chosen, content not yet written. **Schedule note:** writing the post is a parallel track during Days 1–4 so real content is ready for the Day 5 end-to-end publish (acceptance criterion A1).
 
 ---
 
@@ -297,7 +300,7 @@ For traceability against the initial spec:
 ## Appendix A — Tech Stack (locked)
 
 - **SSG:** Hugo (latest stable)
-- **Styling:** TBD Day 1 (see §9.3)
+- **Styling:** PaperMod theme (forked as git submodule or vendored), customized minimally for MVP (resolved §9.3, v2.2)
 - **CMS:** Sanity (hosted studio)
 - **Hosting:** Vercel (Hobby tier is sufficient for MVP)
 - **DNS:** wherever the domain was registered; Vercel handles the cert
