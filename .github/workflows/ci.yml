@@ -91,12 +91,17 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: public
           path: src/site/public
       - name: Serve and scan
+        # Runner-preinstalled Chrome via config: puppeteer's downloaded Chrome
+        # crashes in GitHub's sandbox without --no-sandbox
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "1"
         run: |
           npx -y http-server src/site/public -p 8080 --silent &
           sleep 2
-          npx -y pa11y "http://localhost:8080/blog/fixture-post/"
+          npx -y pa11y --config .github/pa11y-ci.json "http://localhost:8080/blog/fixture-post/"
