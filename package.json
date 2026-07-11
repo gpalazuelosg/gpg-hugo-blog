@@ -1,0 +1,18 @@
+{
+  "name": "gpg-hugo-blog",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Build orchestration for palazuelos.dev — fetches Sanity content, runs Hugo. Studio lives in src/studio (separate package).",
+  "type": "module",
+  "scripts": {
+    "fetch": "node scripts/fetch-content.mjs",
+    "fetch:local": "node --env-file=.env.local scripts/fetch-content.mjs",
+    "build": "npm run fetch && hugo -s src/site --minify --gc",
+    "build:local": "npm run fetch:local && hugo -s src/site --minify --gc",
+    "dev": "hugo -s src/site server --buildDrafts --buildFuture"
+  },
+  "dependencies": {
+    "@portabletext/to-html": "^2",
+    "@sanity/client": "^6"
+  }
+}
