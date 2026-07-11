@@ -2,12 +2,13 @@
 # CI never fetches from Sanity: it builds committed content plus the fixture
 # post (--buildDrafts). F5 (blocking merge) is branch protection, set in GitHub.
 #
+# Hugo source lives in src/site (PRD §1 decision 11) — all builds use -s.
 # Two builds on purpose:
-# - public/       baseURL http://localhost:8080/ — served for Lighthouse+pa11y
-#   (PaperMod's breadcrumb JSON-LD emits invalid JSON under a schemeless
-#   baseURL "/", which --minify rejects; prod always has a real domain)
-# - public-links/ baseURL "/" unminified — root-relative hrefs so htmltest
-#   actually checks internal links instead of skipping them as external
+# - src/site/public/       baseURL http://localhost:8080/ — served for
+#   Lighthouse+pa11y (PaperMod's breadcrumb JSON-LD emits invalid JSON under
+#   a schemeless baseURL "/", which --minify rejects; prod has a real domain)
+# - src/site/public-links/ baseURL "/" unminified — root-relative hrefs so
+#   htmltest actually checks internal links instead of skipping them
 name: CI
 
 on:
@@ -33,7 +34,7 @@ jobs:
       - name: Build for serving (fixture post is the measurement target)
         shell: bash
         run: |
-          hugo --minify --gc --buildDrafts --baseURL "http://localhost:8080/" 2>&1 | tee build.log
+          hugo -s src/site --minify --gc --buildDrafts --baseURL "http://localhost:8080/" 2>&1 | tee build.log
           if grep -q "WARN" build.log; then
             echo "::error::Hugo build produced warnings (F1 gate)"
             exit 1
@@ -41,7 +42,7 @@ jobs:
       - name: Build for link checking (root-relative, unminified)
         shell: bash
         run: |
-          hugo --gc --buildDrafts --baseURL "/" --destination public-links 2>&1 | tee links-build.log
+          hugo -s src/site --gc --buildDrafts --baseURL "/" --destination public-links 2>&1 | tee links-build.log
           if grep -q "WARN" links-build.log; then
             echo "::error::Hugo links build produced warnings (F1 gate)"
             exit 1
@@ -49,11 +50,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: public
-          path: public/
+          path: src/site/public/
       - uses: actions/upload-artifact@v4
         with:
           name: public-links
-          path: public-links/
+          path: src/site/public-links/
 
   links:
     name: Internal links (F2)
@@ -64,10 +65,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: public-links
-          path: public-links
+          path: src/site/public-links
       - uses: wjdp/htmltest-action@master
         with:
-          path: public-links
+          path: src/site/public-links
           config: .htmltest.yml
 
   lighthouse:
@@ -79,7 +80,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: public
-          path: public
+          path: src/site/public
       - name: Lighthouse CI on the post template
         run: |
           npm install -g @lhci/cli@0.14.x
@@ -93,9 +94,9 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: public
-          path: public
+          path: src/site/public
       - name: Serve and scan
         run: |
-          npx -y http-server public -p 8080 --silent &
+          npx -y http-server src/site/public -p 8080 --silent &
           sleep 2
           npx -y pa11y "http://localhost:8080/blog/fixture-post/"
