@@ -78,7 +78,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 
 **MVP requirements:**
 
-1. Sanity project members list contains only `<redacted-admin-email>` at launch. Role: `administrator`.
+1. Sanity project members list contains only the repository owner's Google account at launch. Role: `administrator`. (The concrete address is deliberately not recorded in this public repo — the authoritative list is `sanity.io/manage`.)
 2. That Google account has a **hardware security key or passkey enrolled as 2FA** — this is the single strongest control and closes the phishing vector.
 3. Recommended: enroll the Google account in [Google Advanced Protection Program](https://landing.google.com/advancedprotection/) for aggressive phishing filters and OAuth app restrictions.
 4. **Access revocation procedure:** remove the member from `sanity.io/manage` → session terminates on next Studio load. Documented in the Day-6 runbook (§8).
@@ -274,7 +274,7 @@ Must document:
 All four pre-Day-1 questions are closed:
 
 1. **Domain name** — ✅ Registered. Name and registrar to be provided at Day 1 DNS setup; specs use `<domain>` as placeholder until then. Not a blocker: Vercel connection and cert issuance happen on Day 1 regardless.
-2. **Google SSO email** — ✅ Confirmed: `<redacted-admin-email>` is the sole admin (Sanity project member, `administrator` role). Passkey/security-key 2FA enrollment per §2.2.1-2 is a Day 2 checklist item (acceptance criterion C4).
+2. **Google SSO email** — ✅ Confirmed: the repository owner's Google account is the sole admin (Sanity project member, `administrator` role; address recorded in `sanity.io/manage`, not here). Passkey/security-key 2FA enrollment per §2.2.1-2 is a Day 2 checklist item (acceptance criterion C4).
 3. **Design direction** — ✅ **Fork PaperMod** as the MVP starting point (the recommended option). Rewrite only in a later iteration if it constrains. Appendix A updated.
 4. **First post** — ✅ Topic chosen, content not yet written. **Schedule note:** writing the post is a parallel track during Days 1–4 so real content is ready for the Day 5 end-to-end publish (acceptance criterion A1).
 
