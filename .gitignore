@@ -1,0 +1,20 @@
+# Hugo build output
+/public/
+/resources/
+.hugo_build.lock
+
+# Node
+node_modules/
+
+# Secrets (PRD §3.3) — names documented in .env.example
+.env
+.env.local
+
+# content/blog is generated from Sanity at build time (implementation-plan §3.1),
+# except the listing front matter and the CI fixture post
+/content/blog/*
+!/content/blog/_index.md
+!/content/blog/fixture-post/
+
+# Personal scratch notes, not project docs
+documents/personal-prompts.txt
