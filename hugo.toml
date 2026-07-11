@@ -1,0 +1,50 @@
+# Site config — PRD v2.2 Appendix A, implementation-plan §2
+# baseURL is a placeholder until the domain is configured on Vercel (task 1.3)
+baseURL = "https://example.org/"
+locale = "en-us"
+title = "Gerardo Palazuelos"
+theme = "PaperMod"
+
+# robots.txt is shipped statically from static/robots.txt (PRD §4.3)
+enableRobotsTXT = false
+
+[pagination]
+pagerSize = 10
+
+[params]
+author = "Gerardo Palazuelos"
+description = "Technical blog on software engineering"
+defaultTheme = "auto"
+ShowCodeCopyButtons = true
+# Deferred to Iteration 1 per PRD §6 — do not enable for MVP
+ShowReadingTime = false
+ShowShareButtons = false
+
+[params.homeInfoParams]
+Title = "Gerardo Palazuelos"
+Content = "Technical blog on software engineering. Author intro copy lands in task 4.1."
+
+[[params.socialIcons]]
+name = "github"
+url = "https://github.com/"
+
+[[params.socialIcons]]
+name = "rss"
+url = "/index.xml"
+
+[menus]
+[[menus.main]]
+name = "Blog"
+url = "/blog/"
+weight = 10
+
+[markup.highlight]
+noClasses = false
+codeFences = true
+
+[markup.goldmark.renderer]
+# Content from the Sanity pipeline (task 3.1) arrives as raw HTML blocks
+unsafe = true
+
+[outputs]
+home = ["HTML", "RSS", "sitemap"]
