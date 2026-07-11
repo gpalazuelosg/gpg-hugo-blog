@@ -11,4 +11,5 @@ if (!projectId) {
 
 export default defineCliConfig({
   api: {projectId, dataset},
+  studioHost: 'palazuelos',
 })
