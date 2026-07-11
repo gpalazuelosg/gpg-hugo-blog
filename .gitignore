@@ -1,7 +1,11 @@
 # Hugo build output
-/public/
-/resources/
+/src/site/public/
+/src/site/public-links/
+/src/site/resources/
 .hugo_build.lock
+
+# htmltest cache
+tmp/
 
 # Node
 node_modules/
@@ -12,11 +16,9 @@ node_modules/
 
 # content/blog is generated from Sanity at build time (implementation-plan §3.1),
 # except the listing front matter and the CI fixture post
-/content/blog/*
-!/content/blog/_index.md
-!/content/blog/fixture-post/
+/src/site/content/blog/*
+!/src/site/content/blog/_index.md
+!/src/site/content/blog/fixture-post/
 
 # Personal scratch notes, not project docs
 documents/personal-prompts.txt
-/public-links/
-tmp/

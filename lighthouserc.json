@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "url": ["http://localhost:8080/blog/fixture-post/"],
-      "startServerCommand": "npx -y http-server public -p 8080 --silent",
+      "startServerCommand": "npx -y http-server src/site/public -p 8080 --silent",
       "startServerReadyPattern": "Available",
       "numberOfRuns": 3
     },

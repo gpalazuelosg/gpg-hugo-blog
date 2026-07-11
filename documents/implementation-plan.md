@@ -1,6 +1,7 @@
 # Implementation Plan — Technical Blog & Reviews Site MVP
 
-**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.2 (spec closed)
+**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.3 (spec closed)
+**Revision note:** v1.1 (2026-07-10) — repo restructured to `src/site` + `src/studio` per PRD §1 decision 11.
 **Verifies against:** [acceptance-criteria.md](./acceptance-criteria.md)
 **Status:** Draft for review — becomes binding once committed
 **Rule of the road:** if implementation forces a decision this plan doesn't cover, record it in the PRD §1 decisions table *first*, then build it.
@@ -11,43 +12,46 @@
 
 One repo, two deployable units (Hugo site on Vercel, Sanity Studio hosted by Sanity):
 
+Repo root holds orchestration; both deployable units live under `src/` (PRD §1 decision 11):
+
 ```
 /
 ├── README.md                     # Runbook (Day 6, PRD §8)
-├── package.json                  # Build orchestration: fetch content → hugo
-├── hugo.toml                     # Site config: author, social links, menus, PaperMod params
+├── package.json                  # Build orchestration: fetch content → hugo -s src/site
 ├── vercel.json                   # Build command, output dir, headers
 ├── .env.example                  # Names of required env vars, no values
-├── .gitignore                    # .env.local, /public, node_modules, .hugo_build.lock
+├── .gitignore                    # .env.local, src/site/public*, node_modules
+├── .htmltest.yml                 # F2 gate config
+├── lighthouserc.json             # F3 gate config
+├── documents/                    # Specs: PRD, acceptance criteria, this plan
 │
 ├── scripts/
-│   └── fetch-content.mjs         # GROQ fetch → Portable Text → Markdown → content/blog/*.md
+│   └── fetch-content.mjs         # GROQ fetch → Portable Text → Markdown → src/site/content/blog/*.md
 │
-├── content/
-│   ├── privacy.md                # Hand-written (PRD §2.1)
-│   ├── disclosure.md             # Hand-written, FTC boilerplate (PRD §2.1)
-│   └── blog/                     # GENERATED at build time — git-ignored except _index.md
-│       └── _index.md             # Blog listing front matter
+├── .github/workflows/
+│   └── ci.yml                    # The four PRD §7 gates
 │
-├── themes/PaperMod/              # Git submodule (PRD §9.3 resolution)
-├── layouts/                      # Minimal overrides only (see §4 below)
-│   └── partials/
-│
-├── assets/css/extended/          # PaperMod's sanctioned CSS override point
-│
-├── static/
-│   └── robots.txt                # Allow production crawling (PRD §4.3)
-│
-├── studio/                       # Sanity Studio — separate npm package
-│   ├── package.json
-│   ├── sanity.config.ts
-│   ├── sanity.cli.ts
-│   └── schemaTypes/
-│       ├── index.ts
-│       └── blogPost.ts           # The one MVP content type (PRD §2.3)
-│
-└── .github/workflows/
-    └── ci.yml                    # The four PRD §7 gates
+└── src/
+    ├── site/                     # Hugo source — all hugo commands take -s src/site
+    │   ├── hugo.toml             # Site config: author, social links, menus, PaperMod params
+    │   ├── archetypes/
+    │   ├── assets/css/extended/  # PaperMod's sanctioned CSS override point
+    │   ├── content/
+    │   │   ├── privacy.md        # Hand-written (PRD §2.1)
+    │   │   ├── disclosure.md     # Hand-written, FTC boilerplate (PRD §2.1)
+    │   │   └── blog/             # GENERATED at build time — git-ignored except _index.md + fixture
+    │   │       └── _index.md
+    │   ├── layouts/              # Minimal overrides only (see §4 below)
+    │   ├── static/robots.txt     # Allow production crawling (PRD §4.3)
+    │   └── themes/PaperMod/      # Git submodule (PRD §9.3 resolution)
+    │
+    └── studio/                   # Sanity Studio — separate npm package (Day 2)
+        ├── package.json
+        ├── sanity.config.ts
+        ├── sanity.cli.ts
+        └── schemaTypes/
+            ├── index.ts
+            └── blogPost.ts       # The one MVP content type (PRD §2.3)
 ```
 
 ## 2. PRD Section → Artifact Map
@@ -85,10 +89,10 @@ One repo, two deployable units (Hugo site on Vercel, Sanity Studio hosted by San
    ```
    The `publishedAt <= now()` filter **is** the draft/scheduled-post gate (acceptance B5) — drafts never reach the build.
 2. **Convert** Portable Text `body` → Markdown/HTML. Library: `@portabletext/to-html` rendering into the Markdown file as raw HTML blocks (Hugo passes them through). Custom serializers for: `code` blocks (emit `<pre><code class="language-X">` for PaperMod/Chroma highlighting), inline `image` blocks (Sanity CDN URL with `?auto=format&w=1200` + required alt + `loading="lazy"`).
-3. **Write** `content/blog/<slug>.md` with Hugo front matter (`title`, `summary`, `date: publishedAt`, `cover.image`, `cover.alt`, `description: seo.metaDesc ?? summary`).
+3. **Write** `src/site/content/blog/<slug>.md` with Hugo front matter (`title`, `summary`, `date: publishedAt`, `cover.image`, `cover.alt`, `description: seo.metaDesc ?? summary`).
 4. **Fail the build** (non-zero exit) on: API error, missing required field, or zero posts *after* Day 5 (a `MIN_POSTS` env guard, default 0 until first publish).
 
-Build command (Vercel + local + CI): `node scripts/fetch-content.mjs && hugo --minify --gc`.
+Build command (Vercel + local + CI): `node scripts/fetch-content.mjs && hugo -s src/site --minify --gc`.
 
 ### 3.2 Webhook (Day 5)
 
@@ -116,7 +120,7 @@ Runs on every PR (branch protection makes it blocking, F5). Content fetch is **s
 
 | Job | Tool | Gate (PRD §7) |
 |-----|------|----------------|
-| build | `hugo --minify --gc --buildDrafts` | zero warnings (F1) |
+| build | `hugo -s src/site --minify --gc --buildDrafts` | zero warnings (F1) |
 | links | `htmltest` on `public/` | no broken internal links (F2) |
 | lighthouse | `lhci autorun` against `hugo server` or static serve of fixture post | Perf ≥ 90, A11y ≥ 95 (F3) |
 | a11y | `pa11y-ci` on fixture post | no errors (F4) |

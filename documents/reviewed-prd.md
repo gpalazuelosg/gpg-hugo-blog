@@ -1,6 +1,6 @@
 # Reviewed PRD — Technical Blog & Reviews Site
 
-**Document Version:** 2.2
+**Document Version:** 2.3
 **Last Updated:** 2026-07-10
 **Supersedes:** [initial-technical-website-specification.md](./initial-technical-website-specification.md) (v1.0, 2026-01-20)
 **Project Status:** Spec closed — ready for Day 1
@@ -45,6 +45,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 8 | Analytics                      | **Plausible (hosted) or Vercel Web Analytics**                                                                          | Privacy-friendly, no cookie banner needed in EU                                                      |
 | 9 | RSS                            | **Included** (Hugo generates it for free)                                                                                | v1.0 said "not required" but cost is zero and it aids discovery                                      |
 | 10 | Related posts                  | **Deferred to Iteration 1.** Hugo's `.Related` is cheap to add later                                                    | Not blocking first post                                                                              |
+| 11 | Repo layout (v2.3)             | **Hugo source under `src/site/`, Sanity Studio under `src/studio/`**; orchestration (CI, scripts, htmltest/lighthouse configs) stays at repo root | Clean separation of the two deployable units; Hugo supports `-s src/site`, Studio is dir-independent |
 
 ---
 
