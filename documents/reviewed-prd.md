@@ -46,6 +46,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 9 | RSS                            | **Included** (Hugo generates it for free)                                                                                | v1.0 said "not required" but cost is zero and it aids discovery                                      |
 | 10 | Related posts                  | **Deferred to Iteration 1.** Hugo's `.Related` is cheap to add later                                                    | Not blocking first post                                                                              |
 | 11 | Repo layout (v2.3)             | **Hugo source under `src/site/`, Sanity Studio under `src/studio/`**; orchestration (CI, scripts, htmltest/lighthouse configs) stays at repo root | Clean separation of the two deployable units; Hugo supports `-s src/site`, Studio is dir-independent |
+| 12 | Repo visibility (v2.3)         | **Public GitHub repo** (`gpalazuelosg/gpg-hugo-blog`)                                                                     | GitHub free plan only allows branch protection (F5, PRD §7) on public repos; content lives in Sanity and secrets in Vercel, so the repo holds nothing sensitive |
 
 ---
 
