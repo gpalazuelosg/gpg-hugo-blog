@@ -1,0 +1,7 @@
+# htmltest config — F2 gate (PRD §7.2)
+# External links are not checked in CI: deterministic builds, no network
+# flakiness deciding merges. Internal links, anchors, and images are checked.
+DirectoryPath: public-links
+CheckExternal: false
+IgnoreDirectoryMissingTrailingSlash: true
+IgnoreEmptyHref: false

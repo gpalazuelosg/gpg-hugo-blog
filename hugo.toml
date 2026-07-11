@@ -8,6 +8,10 @@ theme = "PaperMod"
 # robots.txt is shipped statically from static/robots.txt (PRD §4.3)
 enableRobotsTXT = false
 
+# No categories/tags in MVP (PRD §2.3 deferred fields, acceptance A5/D4);
+# also stops Hugo emitting empty /tags/ and /categories/ pages
+disableKinds = ["taxonomy", "term"]
+
 [pagination]
 pagerSize = 10
 

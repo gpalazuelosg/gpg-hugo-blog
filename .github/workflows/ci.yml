@@ -1,0 +1,101 @@
+# CI gates per PRD §7 / implementation-plan §3.5 (acceptance F1–F4).
+# CI never fetches from Sanity: it builds committed content plus the fixture
+# post (--buildDrafts). F5 (blocking merge) is branch protection, set in GitHub.
+#
+# Two builds on purpose:
+# - public/       baseURL http://localhost:8080/ — served for Lighthouse+pa11y
+#   (PaperMod's breadcrumb JSON-LD emits invalid JSON under a schemeless
+#   baseURL "/", which --minify rejects; prod always has a real domain)
+# - public-links/ baseURL "/" unminified — root-relative hrefs so htmltest
+#   actually checks internal links instead of skipping them as external
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+env:
+  HUGO_VERSION: "0.163.3"
+
+jobs:
+  build:
+    name: Hugo build, zero warnings (F1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
+      - name: Build for serving (fixture post is the measurement target)
+        shell: bash
+        run: |
+          hugo --minify --gc --buildDrafts --baseURL "http://localhost:8080/" 2>&1 | tee build.log
+          if grep -q "WARN" build.log; then
+            echo "::error::Hugo build produced warnings (F1 gate)"
+            exit 1
+          fi
+      - name: Build for link checking (root-relative, unminified)
+        shell: bash
+        run: |
+          hugo --gc --buildDrafts --baseURL "/" --destination public-links 2>&1 | tee links-build.log
+          if grep -q "WARN" links-build.log; then
+            echo "::error::Hugo links build produced warnings (F1 gate)"
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public
+          path: public/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-links
+          path: public-links/
+
+  links:
+    name: Internal links (F2)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: public-links
+          path: public-links
+      - uses: wjdp/htmltest-action@master
+        with:
+          path: public-links
+          config: .htmltest.yml
+
+  lighthouse:
+    name: Lighthouse perf ≥90, a11y ≥95 (F3)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: public
+          path: public
+      - name: Lighthouse CI on the post template
+        run: |
+          npm install -g @lhci/cli@0.14.x
+          lhci autorun
+
+  a11y:
+    name: pa11y on post template (F4)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: public
+          path: public
+      - name: Serve and scan
+        run: |
+          npx -y http-server public -p 8080 --silent &
+          sleep 2
+          npx -y pa11y "http://localhost:8080/blog/fixture-post/"
