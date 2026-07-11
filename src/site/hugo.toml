@@ -1,6 +1,6 @@
-# Site config — PRD v2.2 Appendix A, implementation-plan §2
-# baseURL is a placeholder until the domain is configured on Vercel (task 1.3)
-baseURL = "https://example.org/"
+# Site config — PRD Appendix A, implementation-plan §2
+# CI overrides baseURL per gate (see .github/workflows/ci.yml)
+baseURL = "https://palazuelos.dev/"
 locale = "en-us"
 title = "Gerardo Palazuelos"
 theme = "PaperMod"

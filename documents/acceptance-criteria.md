@@ -1,7 +1,7 @@
 # MVP Acceptance Criteria — Technical Blog & Reviews Site
 
-**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.1
-**Status:** Draft — becomes binding once PRD v2.2 closes the §9 open questions
+**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.3
+**Status:** Binding — the spec is closed; every MUST item below gates MVP ship
 **How to use:** Every criterion is a pass/fail check with a stated verification method. The MVP ships when every MUST item passes. Anything failing is a bug against the spec; anything desirable but absent from this list is an Iteration 1+ candidate, not a fix.
 
 ---
@@ -10,7 +10,7 @@
 
 | ID | Criterion | Verify by | PRD ref |
 |----|-----------|-----------|---------|
-| A1 | A published blog article is reachable at `https://<domain>/blog/<slug>/` on the production domain over HTTPS. | Open the URL in a browser; view page source shows rendered article content (not client-side fetched). | §0.1 |
+| A1 | A published blog article is reachable at `https://palazuelos.dev/blog/<slug>/` on the production domain over HTTPS. | Open the URL in a browser; view page source shows rendered article content (not client-side fetched). | §0.1 |
 | A2 | Editing the article in Sanity Studio and hitting Publish results in the change being live in production within ≤5 minutes, with no manual step. | Timed test: edit title in Studio → Publish → stopwatch until change visible in prod. | §0.2, §3.1 |
 | A3 | A preview environment exists that reflects unmerged changes: opening a PR against `main` produces a Vercel Preview URL rendering that branch. | Open a trivial PR (e.g., footer text change); confirm the Vercel preview URL shows the change while prod does not. | §0.3, §3.2 |
 | A4 | Privacy Policy and Affiliate Disclosure pages are live at `/privacy/` and `/disclosure/`. | Open both URLs in prod; both linked from the site footer. | §0.4, §2.1 |
@@ -23,14 +23,14 @@
 | B1 | Home page shows author intro, latest 3 published posts, and social links. | Visual check; publish a 4th post and confirm the oldest drops off the home list on next deploy. | §2.1 |
 | B2 | `/blog/` lists all published posts in reverse-chronological order by `publishedAt`. No category/tag filters present. | Visual check with ≥2 posts having different `publishedAt`. | §2.1 |
 | B3 | A blog post page renders every Portable Text block type in the schema: paragraph, headings, code block with syntax highlighting language, image, list. | Author one test post containing all block types; inspect rendered output. | §2.1, §2.3 |
-| B4 | Requesting a non-existent URL returns HTTP 404 with the site's 404 page. | `curl -I https://<domain>/does-not-exist/` → 404; page renders with site chrome. | §2.1 |
+| B4 | Requesting a non-existent URL returns HTTP 404 with the site's 404 page. | `curl -I https://palazuelos.dev/does-not-exist/` → 404; page renders with site chrome. | §2.1 |
 | B5 | A post in draft state (no `publishedAt`, or `publishedAt` in the future) does not appear anywhere on the public site. | Create a draft post; confirm absent from home, `/blog/`, sitemap, and RSS after a deploy. | §2.2, §2.3 |
 
 ## C. Authoring, Auth & Authorization (PRD §2.2)
 
 | ID | Criterion | Verify by | PRD ref |
 |----|-----------|-----------|---------|
-| C1 | Sanity Studio is deployed at `studio.<domain>` (or `/studio`) and requires login. | Open Studio URL in a private browser window → login wall, no content visible. | §2.2 |
+| C1 | Sanity Studio is deployed at `studio.palazuelos.dev` (or `/studio`) and requires login. | Open Studio URL in a private browser window → login wall, no content visible. | §2.2 |
 | C2 | The Sanity project member list contains exactly one member: the confirmed admin email, with `administrator` role. | Screenshot / check `sanity.io/manage` members page. | §2.2.1-1 |
 | C3 | A Google account that is **not** a project member can authenticate with Google SSO but sees "no access" — it cannot read or write content. | Test with a second Google account. | §2.2.1 |
 | C4 | The admin Google account has a passkey or hardware security key enrolled as 2FA. | Check Google account security settings. | §2.2.1-2 |

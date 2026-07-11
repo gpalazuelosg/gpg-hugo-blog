@@ -38,7 +38,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 1 | CMS                            | **Sanity**                                                                                                              | Hosted studio (no server to run), free tier fits solo use, first-class Hugo integration via GROQ/CDN |
 | 2 | Deployment model               | **Git-based auto-deploy via Vercel + Sanity webhook**, no manual trigger                                                | "Manual trigger" contradicted the "CI/CD with staging" goal; auto-deploy is the walking skeleton     |
 | 3 | Staging                        | **Vercel Preview Deployments** per PR + a persistent `preview` branch                                                   | Free, no extra infra, matches Git-based workflow                                                     |
-| 4 | Login / auth                   | **Sanity project member allowlist + Google SSO for identity**, hosted at `studio.<domain>` (or `/studio` subpath)        | Allowlist (not open SSO) satisfies "approved users only" without writing auth code — see §2.2       |
+| 4 | Login / auth                   | **Sanity project member allowlist + Google SSO for identity**, hosted at `studio.palazuelos.dev` (or `/studio` subpath)        | Allowlist (not open SSO) satisfies "approved users only" without writing auth code — see §2.2       |
 | 5 | Affiliate click tracking       | **Deferred to Iteration 2.** MVP uses plain `rel="sponsored nofollow"` links                                            | Click tracking on a static site requires a serverless redirect; out of MVP scope                     |
 | 6 | Search                         | **Deferred to Iteration 1.** MVP has no search                                                                          | With <10 posts, browsing beats searching                                                             |
 | 7 | Reviews & Affiliate Links      | **Content models defined but not implemented in MVP.** Only Blog Article is authored in week 1                          | Walking skeleton needs one content type, not three                                                   |
@@ -63,7 +63,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 
 ### 2.2 Private / Authoring
 
-- Sanity Studio deployed to `studio.<domain>` (or subpath).
+- Sanity Studio deployed to `studio.palazuelos.dev` (or subpath).
 - One content type: `blogPost`.
 - Draft/publish workflow (Sanity native).
 - Preview URL from Studio → Vercel Preview environment.
@@ -131,8 +131,8 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 
 | Env         | Sanity dataset | Vercel branch  | URL                       |
 | ----------- | -------------- | -------------- | ------------------------- |
-| Production  | `production`   | `main`         | `<domain>.com`            |
-| Preview     | `production`   | any PR branch  | `pr-N.<domain>.vercel.app`|
+| Production  | `production`   | `main`         | `palazuelos.dev`            |
+| Preview     | `production`   | any PR branch  | `<project>-git-<branch>.vercel.app`|
 | Local dev   | `production` (read-only) | local  | `localhost:1313`          |
 
 Single dataset for MVP. Split into `production` / `staging` datasets **only if** the author starts wanting to test schema changes without touching live content — that's an Iteration 2 concern.
@@ -273,7 +273,7 @@ Must document:
 
 All four pre-Day-1 questions are closed:
 
-1. **Domain name** — ✅ Registered. Name and registrar to be provided at Day 1 DNS setup; specs use `<domain>` as placeholder until then. Not a blocker: Vercel connection and cert issuance happen on Day 1 regardless.
+1. **Domain name** — ✅ Registered: **palazuelos.dev** (registrar recorded privately, not in this public repo). Note: `.dev` is HSTS-preloaded — HTTPS-only, which Vercel satisfies automatically.
 2. **Google SSO email** — ✅ Confirmed: the repository owner's Google account is the sole admin (Sanity project member, `administrator` role; address recorded in `sanity.io/manage`, not here). Passkey/security-key 2FA enrollment per §2.2.1-2 is a Day 2 checklist item (acceptance criterion C4).
 3. **Design direction** — ✅ **Fork PaperMod** as the MVP starting point (the recommended option). Rewrite only in a later iteration if it constrains. Appendix A updated.
 4. **First post** — ✅ Topic chosen, content not yet written. **Schedule note:** writing the post is a parallel track during Days 1–4 so real content is ready for the Day 5 end-to-end publish (acceptance criterion A1).
