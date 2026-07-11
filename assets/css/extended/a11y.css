@@ -1,0 +1,16 @@
+/* WCAG 2.1 AA fixes over PaperMod defaults (PRD §4.2, acceptance E4/F4).
+   PaperMod's chroma-styles.css colors comments/doc-strings #6e738d, which is
+   3.61:1 against the light-theme code-block bg rgb(28,29,33) and 2.89:1
+   against the dark-theme bg rgb(46,46,51) — both below the 4.5:1 minimum.
+   #a0a6bf measures 6.98:1 and 5.6:1 respectively. */
+.chroma .sd,
+.chroma .sh,
+.chroma .c,
+.chroma .ch,
+.chroma .cm,
+.chroma .c1,
+.chroma .cs,
+.chroma .cp,
+.chroma .cpf {
+    color: #a0a6bf;
+}

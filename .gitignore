@@ -18,3 +18,5 @@ node_modules/
 
 # Personal scratch notes, not project docs
 documents/personal-prompts.txt
+/public-links/
+tmp/
