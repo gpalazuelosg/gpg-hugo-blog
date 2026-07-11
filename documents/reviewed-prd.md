@@ -1,7 +1,7 @@
 # Reviewed PRD — Technical Blog & Reviews Site
 
-**Document Version:** 2.3
-**Last Updated:** 2026-07-10
+**Document Version:** 2.4
+**Last Updated:** 2026-07-11
 **Supersedes:** [initial-technical-website-specification.md](./initial-technical-website-specification.md) (v1.0, 2026-01-20)
 **Project Status:** Spec closed — ready for Day 1
 **Acceptance criteria:** [acceptance-criteria.md](./acceptance-criteria.md)
@@ -47,6 +47,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 10 | Related posts                  | **Deferred to Iteration 1.** Hugo's `.Related` is cheap to add later                                                    | Not blocking first post                                                                              |
 | 11 | Repo layout (v2.3)             | **Hugo source under `src/site/`, Sanity Studio under `src/studio/`**; orchestration (CI, scripts, htmltest/lighthouse configs) stays at repo root | Clean separation of the two deployable units; Hugo supports `-s src/site`, Studio is dir-independent |
 | 12 | Repo visibility (v2.3)         | **Public GitHub repo** (`gpalazuelosg/gpg-hugo-blog`)                                                                     | GitHub free plan only allows branch protection (F5, PRD §7) on public repos; content lives in Sanity and secrets in Vercel, so the repo holds nothing sensitive |
+| 13 | Workflow discipline (v2.4)     | **PR-flow enforced starting Day 3.** Days 1–2 allowed direct-to-`main` for bootstrap scaffolding; Day 3 onward every code change lands via PR with all 4 CI gates green. Admin bypass reserved for genuine emergencies (documented in commit) | Days 1–2 changes (Hugo scaffold, CI wiring, Studio scaffold) don't exercise the CI gates meaningfully — the gates test Hugo output and a11y, neither of which those commits touched. Day 3 introduces the content pipeline into Hugo's build path; from that point the gates start catching real regressions and F5 must be honored, not bypassed |
 
 ---
 

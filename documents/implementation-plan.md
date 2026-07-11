@@ -1,7 +1,7 @@
 # Implementation Plan — Technical Blog & Reviews Site MVP
 
-**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.3 (spec closed)
-**Revision note:** v1.1 (2026-07-10) — repo restructured to `src/site` + `src/studio` per PRD §1 decision 11.
+**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.4 (spec closed)
+**Revision note:** v1.2 (2026-07-11) — PR flow becomes mandatory from Day 3 per PRD §1 decision 13; v1.1 restructured repo to `src/site` + `src/studio` per PRD §1 decision 11.
 **Verifies against:** [acceptance-criteria.md](./acceptance-criteria.md)
 **Status:** Draft for review — becomes binding once committed
 **Rule of the road:** if implementation forces a decision this plan doesn't cover, record it in the PRD §1 decisions table *first*, then build it.
@@ -128,6 +128,11 @@ Runs on every PR (branch protection makes it blocking, F5). Content fetch is **s
 ## 4. Task Breakdown (one branch/PR per task)
 
 Verification = the acceptance-criteria IDs the PR must demonstrate, plus CI green.
+
+**Workflow discipline (PRD §1 decision 13):**
+- **Days 1–2:** direct-to-`main` allowed for bootstrap scaffolding (Hugo scaffold, CI wiring, Studio scaffold). These commits don't touch Hugo's build path so the F1–F4 gates are not meaningful gates for them.
+- **Day 3 onward:** every code change lands via PR. Merge requires all 4 CI gates green (F1–F4). Admin bypass of branch protection is reserved for genuine emergencies and must be justified in the commit body.
+- Dashboard-only tasks (Vercel/Sanity config) remain out of Git and continue as-is.
 
 ### Day 1 — Skeleton in production
 | # | Task | Branch | Verify |
