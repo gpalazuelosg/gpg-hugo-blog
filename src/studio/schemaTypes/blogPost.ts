@@ -35,7 +35,10 @@ export const blogPost = defineType({
           validation: (rule) => rule.required(),
         }),
       ],
-      validation: (rule) => rule.required(),
+      // required() alone only checks the field object exists; assetRequired()
+      // checks an image was actually uploaded (proven by pascal-s-triangle
+      // slipping past Studio and failing the fetch guard).
+      validation: (rule) => rule.required().assetRequired(),
     }),
     defineField({
       name: 'body',
@@ -66,6 +69,7 @@ export const blogPost = defineType({
               validation: (rule) => rule.required(),
             }),
           ],
+          validation: (rule) => rule.required().assetRequired(),
         }),
         defineArrayMember({
           type: 'code',
