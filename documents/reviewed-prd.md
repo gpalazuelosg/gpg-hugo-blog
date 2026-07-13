@@ -1,7 +1,7 @@
 # Reviewed PRD — Technical Blog & Reviews Site
 
-**Document Version:** 2.5
-**Last Updated:** 2026-07-12
+**Document Version:** 2.6
+**Last Updated:** 2026-07-13
 **Supersedes:** [initial-technical-website-specification.md](./initial-technical-website-specification.md) (v1.0, 2026-01-20)
 **Project Status:** Spec closed — ready for Day 1
 **Acceptance criteria:** [acceptance-criteria.md](./acceptance-criteria.md)
@@ -49,6 +49,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 12 | Repo visibility (v2.3)         | **Public GitHub repo** (`gpalazuelosg/gpg-hugo-blog`)                                                                     | GitHub free plan only allows branch protection (F5, PRD §7) on public repos; content lives in Sanity and secrets in Vercel, so the repo holds nothing sensitive |
 | 13 | Workflow discipline (v2.4)     | **PR-flow enforced starting Day 3.** Days 1–2 allowed direct-to-`main` for bootstrap scaffolding; Day 3 onward every code change lands via PR with all 4 CI gates green. Admin bypass reserved for genuine emergencies (documented in commit) | Days 1–2 changes (Hugo scaffold, CI wiring, Studio scaffold) don't exercise the CI gates meaningfully — the gates test Hugo output and a11y, neither of which those commits touched. Day 3 introduces the content pipeline into Hugo's build path; from that point the gates start catching real regressions and F5 must be honored, not bypassed |
 | 14 | Webhook authentication (v2.5)  | **The Vercel Deploy Hook URL itself is the capability secret; no signature validation in MVP.** `SANITY_WEBHOOK_SECRET` (§3.3 of v2.4) has no MVP consumer and is not provisioned. It returns in Iteration 3, when serverless functions can validate Sanity's `sanity-webhook-signature` header | Spec deviation discovered during Day 5 implementation: Vercel Deploy Hooks accept any POST to the hook URL and offer no signature check to configure. Mitigation: the URL is stored only in Sanity's webhook config (never in the repo); worst case for a leaked URL is a spurious rebuild of already-public content; rotation = delete and recreate the deploy hook |
+| 15 | Analytics vendor (v2.6)        | **Vercel Web Analytics** (closes the §1 decision-8 / Appendix-A "pick on Day 6" item). Injected via `layouts/_partials/extend_head.html`, gated on `VERCEL_ENV=production` so previews, CI, and local builds emit no script | Free on the existing Vercel Hobby plan vs $9/mo for Plausible; cookie-free and GDPR-friendly like Plausible; no new vendor account. Retention/feature limits are acceptable at MVP traffic — revisit if a public dashboard or long-horizon stats are wanted (that would mean Plausible) |
 
 ---
 
@@ -308,7 +309,7 @@ For traceability against the initial spec:
 - **CMS:** Sanity (hosted studio)
 - **Hosting:** Vercel (Hobby tier is sufficient for MVP)
 - **DNS:** wherever the domain was registered; Vercel handles the cert
-- **Analytics:** Plausible (hosted) or Vercel Web Analytics — pick on Day 6
+- **Analytics:** Vercel Web Analytics (resolved §1 decision 15, v2.6)
 - **Version Control:** GitHub, single repo
 - **Backups:** Sanity CLI export → private cloud storage
 
@@ -319,7 +320,7 @@ For traceability against the initial spec:
 | Vercel            | Hobby                | $0                       |
 | Sanity            | Free (3 users, 10k docs) | $0                    |
 | Domain            | ~$12/yr amortized    | ~$1                      |
-| Plausible         | Starter (if chosen)  | $9                       |
-| **Total**         |                      | **~$0–10/mo**            |
+| Analytics         | Vercel Web Analytics (Hobby, decision 15) | $0 |
+| **Total**         |                      | **~$1/mo**               |
 
-Free tiers cover the walking skeleton indefinitely; Plausible is the only likely paid line item and is optional.
+Free tiers cover the walking skeleton indefinitely; the domain is the only paid line item (Plausible at $9/mo was not chosen — see §1 decision 15).

@@ -58,3 +58,9 @@ unsafe = true
 
 [outputs]
 home = ["HTML", "RSS", "sitemap"]
+
+[security.funcs]
+# Hugo's default only whitelists ^HUGO_ and ^CI$. extend_head.html reads
+# VERCEL_ENV to emit the analytics script on production deploys only
+# (PRD §1 decision 15).
+getenv = ["^HUGO_", "^CI$", "^VERCEL_ENV$"]
