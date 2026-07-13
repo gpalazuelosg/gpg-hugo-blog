@@ -26,11 +26,17 @@ ShowShareButtons = false
 
 [params.homeInfoParams]
 Title = "Gerardo Palazuelos"
-Content = "Technical blog on software engineering. Author intro copy lands in task 4.1."
+Content = "Notes on software engineering — system design, backend patterns, and lessons learned building production systems."
+
+[params.footer]
+# Rendered by PaperMod's default footer partial between copyright and the
+# Powered-by line — Markdown links keep the override footprint at zero
+# (PRD §4.5 / acceptance A4, E9).
+text = "[Privacy](/privacy/) · [Affiliate disclosure](/disclosure/)"
 
 [[params.socialIcons]]
 name = "github"
-url = "https://github.com/"
+url = "https://github.com/gpalazuelosg"
 
 [[params.socialIcons]]
 name = "rss"

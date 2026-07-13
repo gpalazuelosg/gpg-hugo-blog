@@ -1,0 +1,14 @@
+{{- define "main" }}
+<article class="post-single">
+    <header class="post-header">
+        <h1 class="post-title">Page not found</h1>
+    </header>
+    <div class="post-content">
+        <p>The page you're looking for doesn't exist, or the link has moved.</p>
+        <p>
+            <a href="{{ "/" | absLangURL }}">Return to the home page</a>,
+            or <a href="{{ "/blog/" | absLangURL }}">browse the blog</a>.
+        </p>
+    </div>
+</article>
+{{- end }}
