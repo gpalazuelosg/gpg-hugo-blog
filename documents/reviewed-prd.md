@@ -1,7 +1,7 @@
 # Reviewed PRD — Technical Blog & Reviews Site
 
-**Document Version:** 2.4
-**Last Updated:** 2026-07-11
+**Document Version:** 2.5
+**Last Updated:** 2026-07-12
 **Supersedes:** [initial-technical-website-specification.md](./initial-technical-website-specification.md) (v1.0, 2026-01-20)
 **Project Status:** Spec closed — ready for Day 1
 **Acceptance criteria:** [acceptance-criteria.md](./acceptance-criteria.md)
@@ -48,6 +48,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 11 | Repo layout (v2.3)             | **Hugo source under `src/site/`, Sanity Studio under `src/studio/`**; orchestration (CI, scripts, htmltest/lighthouse configs) stays at repo root | Clean separation of the two deployable units; Hugo supports `-s src/site`, Studio is dir-independent |
 | 12 | Repo visibility (v2.3)         | **Public GitHub repo** (`gpalazuelosg/gpg-hugo-blog`)                                                                     | GitHub free plan only allows branch protection (F5, PRD §7) on public repos; content lives in Sanity and secrets in Vercel, so the repo holds nothing sensitive |
 | 13 | Workflow discipline (v2.4)     | **PR-flow enforced starting Day 3.** Days 1–2 allowed direct-to-`main` for bootstrap scaffolding; Day 3 onward every code change lands via PR with all 4 CI gates green. Admin bypass reserved for genuine emergencies (documented in commit) | Days 1–2 changes (Hugo scaffold, CI wiring, Studio scaffold) don't exercise the CI gates meaningfully — the gates test Hugo output and a11y, neither of which those commits touched. Day 3 introduces the content pipeline into Hugo's build path; from that point the gates start catching real regressions and F5 must be honored, not bypassed |
+| 14 | Webhook authentication (v2.5)  | **The Vercel Deploy Hook URL itself is the capability secret; no signature validation in MVP.** `SANITY_WEBHOOK_SECRET` (§3.3 of v2.4) has no MVP consumer and is not provisioned. It returns in Iteration 3, when serverless functions can validate Sanity's `sanity-webhook-signature` header | Spec deviation discovered during Day 5 implementation: Vercel Deploy Hooks accept any POST to the hook URL and offer no signature check to configure. Mitigation: the URL is stored only in Sanity's webhook config (never in the repo); worst case for a leaked URL is a spurious rebuild of already-public content; rotation = delete and recreate the deploy hook |
 
 ---
 
@@ -145,7 +146,7 @@ Stored in Vercel env vars, never in the repo:
 - `SANITY_PROJECT_ID` (public, but centralized here)
 - `SANITY_DATASET`
 - `SANITY_API_READ_TOKEN` (read-only, for build)
-- `SANITY_WEBHOOK_SECRET` (validates incoming webhook)
+- ~~`SANITY_WEBHOOK_SECRET` (validates incoming webhook)~~ — not provisioned in MVP; the Deploy Hook URL is the secret (§1 decision 14). Returns in Iteration 3.
 
 Local dev uses a `.env.local` (git-ignored) with the same names.
 

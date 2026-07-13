@@ -1,6 +1,6 @@
 # MVP Acceptance Criteria — Technical Blog & Reviews Site
 
-**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.3
+**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.5 (G3 amended per §1 decision 14)
 **Status:** Binding — the spec is closed; every MUST item below gates MVP ship
 **How to use:** Every criterion is a pass/fail check with a stated verification method. The MVP ships when every MUST item passes. Anything failing is a bug against the spec; anything desirable but absent from this list is an Iteration 1+ candidate, not a fix.
 
@@ -76,7 +76,7 @@
 |----|-----------|-----------|---------|
 | G1 | `README.md` at repo root documents: local dev, creating a post, previewing a draft, manual rebuild, rollback, backup export. | Read README against the §8 list. | §8 |
 | G2 | Each runbook procedure has been executed once successfully — including an actual rollback via Vercel (previous deployment → Promote) and one backup export. | Rehearsal log noted in README or PR description. | §8, §4.4 |
-| G3 | The Sanity→Vercel webhook is secured with `SANITY_WEBHOOK_SECRET`, and all secrets live in Vercel env vars / git-ignored `.env.local` — none committed to the repo. | `git log -p` grep for token patterns; check Vercel dashboard. | §3.3 |
+| G3 | The Sanity→Vercel webhook targets a Vercel Deploy Hook URL stored only in Sanity's webhook config (the URL is the capability secret — no signature validation exists in MVP, PRD §1 decision 14), and all secrets live in Vercel env vars / git-ignored `.env.local` — none committed to the repo. | `git log -p` grep for token patterns and the deploy-hook URL; check Vercel dashboard. | §3.3, §1.14 |
 
 ---
 
