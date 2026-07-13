@@ -4,13 +4,14 @@ description: How this site handles your data.
 summary: "How this site handles your data."
 ---
 
-**Last updated:** 2026-07-12
+**Last updated:** 2026-07-13
 
 ## Short version
 
 This site does not set cookies, does not collect personal information, and
-does not track individual visitors. There is nothing to opt out of, because
-there is nothing being collected in the first place.
+does not track individual visitors. The only measurement is anonymous,
+aggregate page-view counting (described under Analytics below), which cannot
+be tied to you and does not follow you across sites.
 
 ## What data this site collects
 
@@ -35,10 +36,19 @@ and this page will be updated to describe it.
 
 ## Analytics
 
-No analytics platform is currently deployed. If aggregate visitor counts are
-added in the future, they will be measured with a privacy-respecting,
-cookie-free tool that does not track individuals across sites, and this page
-will be updated to name the tool and describe exactly what it records.
+This site uses **[Vercel Web Analytics](https://vercel.com/docs/analytics/privacy-policy)**
+to count page views in aggregate. It is cookie-free and does not track
+individuals: no persistent identifier is stored on your device, and visits
+cannot be followed across other sites.
+
+What it records per page view: the page URL, referrer, and coarse request
+attributes (country, device type, browser, operating system). Visitors are
+de-duplicated within a single visit using a short-lived hash computed from
+the incoming request; the hash is not stored long-term and cannot identify
+you. The data is only ever visible to the site owner as aggregate charts.
+
+There is no advertising, no cross-site tracking, and nothing here requires a
+cookie consent banner — no cookies are set.
 
 ## Third-party embeds
 

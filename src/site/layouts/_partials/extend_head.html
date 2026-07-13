@@ -1,0 +1,7 @@
+{{- /* Vercel Web Analytics (PRD §1 decision 15) — production deploys only.
+     Gated on VERCEL_ENV, not hugo.IsProduction: Vercel preview builds run the
+     same hugo command, and local/CI builds must not emit the script at all
+     (htmltest would flag /_vercel/* as a broken internal link). */}}
+{{- if eq (getenv "VERCEL_ENV") "production" }}
+<script defer src="/_vercel/insights/script.js"></script>
+{{- end }}
