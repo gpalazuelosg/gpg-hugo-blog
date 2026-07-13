@@ -97,7 +97,7 @@ Build command (Vercel + local + CI): `node scripts/fetch-content.mjs && hugo -s 
 ### 3.2 Webhook (Day 5)
 
 Sanity webhook (filter: `_type == "blogPost"`, on publish/unpublish) → **Vercel Deploy Hook URL**.
-⚠️ **Spec deviation to record when implemented:** Vercel Deploy Hooks don't validate a signature header — the hook URL itself is the capability secret. PRD §3.3's `SANITY_WEBHOOK_SECRET` therefore has no MVP consumer; it becomes relevant in Iteration 3 (serverless functions). Log this in PRD §1 on Day 5.
+✅ **Spec deviation recorded** as PRD §1 decision 14 (v2.5, 2026-07-12): Vercel Deploy Hooks don't validate a signature header — the hook URL itself is the capability secret. PRD §3.3's `SANITY_WEBHOOK_SECRET` therefore has no MVP consumer; it becomes relevant in Iteration 3 (serverless functions). Acceptance criterion G3 amended to match.
 
 ### 3.3 Theme strategy (PRD §9.3: fork PaperMod)
 
