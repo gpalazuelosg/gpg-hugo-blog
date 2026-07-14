@@ -55,7 +55,10 @@ const QUERY = `
   }
 `
 
-const CDN_PARAMS = '?auto=format&w=1200'
+// fit=max: never upscale — a 260px source stays 260px instead of being
+// inflated to w=1200 (a 314KB→29KB difference on the first real cover, and
+// the difference between failing and passing the E1 LCP budget).
+const CDN_PARAMS = '?auto=format&w=1200&fit=max'
 
 const escapeHtmlAttr = (s) =>
   String(s)
