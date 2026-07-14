@@ -118,6 +118,13 @@ Then copy the archive to the designated **private** cloud folder (not this
 repo). Run before every schema change, and monthly once the post count grows
 (PRD §4.4). Restore path: `npx sanity dataset import <file> <dataset>`.
 
+### 7. Revoke Studio access (PRD §2.2.1-4)
+
+sanity.io/manage → project → Members → remove the member. Their session
+terminates on the next Studio load. Inviting is the same screen, invite by
+email; new members need 2FA on their Google account before getting the
+`administrator` role (`editor` suffices for content-only collaborators).
+
 ---
 
 ## CI gates (every PR, blocking)

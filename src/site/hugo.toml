@@ -56,8 +56,12 @@ codeFences = true
 # Content from the Sanity pipeline (task 3.1) arrives as raw HTML blocks
 unsafe = true
 
+# Home outputs: HTML + RSS. Do NOT add "sitemap" here — that renders
+# /sitemap.xml as a *home-page* output listing only the home page's direct
+# children, silently dropping posts (broke acceptance E6). Hugo emits the
+# site-wide sitemap by default as its own page kind.
 [outputs]
-home = ["HTML", "RSS", "sitemap"]
+home = ["HTML", "RSS"]
 
 [security.funcs]
 # Hugo's default only whitelists ^HUGO_ and ^CI$. extend_head.html reads
