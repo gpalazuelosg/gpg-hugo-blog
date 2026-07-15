@@ -31,11 +31,11 @@
 | E1 | ✅ PASS | 2026-07-14 post-fix Lighthouse mobile on `https://palazuelos.dev/blog/pascal-s-triangle/`: perf 90, **LCP 1.8s** (< 2.5s budget), FCP 1.4s. Was 4.7s/72 — see bug 2. **Content note:** a 260×240 GIF as cover stays small/low-quality — use a ≥1200px static image for future covers |
 | E2 | ✅ PASS | F3 gate (CI Lighthouse on post template): Performance ≥ 90 green on every PR |
 | E3 | ✅ PASS | Images served from Sanity CDN with `auto=format&w=1200&fit=max`; body images `loading="lazy"`; cover is the hero (eager — correct for LCP) |
-| E4 | ⏳ PENDING (manual half) | Automated half green (pa11y F4, Lighthouse a11y ≥ 95 F3; landmarks + focus styles in `a11y.css`). Manual axe DevTools sweep + keyboard tab-through not yet done |
+| E4 | ⏳ PENDING (tab-through only) | CI automated half green (pa11y F4, Lighthouse a11y ≥ 95 F3). axe sweep done 2026-07-14 via `@axe-core/cli` on home, `/blog/`, post, `/privacy/`: found 1 serious violation (scrollable code blocks not keyboard-focusable) — fixed in PR #10, prod re-scan **0 violations on all 4 pages**. Remaining: author keyboard tab-through |
 | E5 | ✅ PASS | Unique `<title>`/description/canonical verified on home + post; OG/Twitter tags with cover fallback present |
 | E6 | 🔧 FIXED | Was FAIL (see bug 1). Local build now: home, post, `/blog/`, both legal pages in sitemap; RSS includes post, drafts/future excluded |
 | E7 | ✅ PASS | Preview deployment sends `x-robots-tag: noindex`; prod `robots.txt` = allow all |
-| E8 | ⏳ PENDING (storage half) | Export executed: `production-2026-07-13.tar.gz` (2 docs, 3 assets). Copy to private cloud folder not yet done |
+| E8 | ✅ PASS | Export executed (`production-2026-07-13.tar.gz`, 2 docs + 3 assets); author copied it to the private cloud folder 2026-07-14. Automation TODO recorded in README §6 (trigger: ≥10 posts or first schema change) |
 | E9 | ✅ PASS | Privacy page names Vercel Web Analytics + records description; disclosure = FTC boilerplate, footer-linked; no cookie banner (none needed — no cookies) |
 | F1 | ✅ PASS | Green on every PR (#1–#7); zero-warning build enforced |
 | F2 | ✅ PASS | htmltest green on every PR |
@@ -49,8 +49,8 @@
 ## Ship blockers remaining
 
 1. ~~E1 re-measure~~ ✅ done 2026-07-14: perf 90, LCP 1.8s (fit=max + domain flip).
-2. **E4 manual half** — axe DevTools sweep + keyboard tab-through (~10 min, author).
-3. **E8 storage half** — copy the export to the private cloud folder (~1 min, author).
-4. **C2** — remove the second admin (doubles as C6 live rehearsal) or record the PRD amendment.
+2. ~~E4 axe sweep~~ ✅ done 2026-07-14 (1 serious found → fixed PR #10 → 0 violations); **keyboard tab-through** still pending (author, ~2 min).
+3. ~~E8~~ ✅ done 2026-07-14 (backup in private cloud; automation TODO in README).
+4. **C2** — plan agreed: remove the email/password project member (doubles as C6 live rehearsal), add second owner Gmail via Google SSO + passkey, record PRD amendment. Org-level note: the email/password account is the sole *organization* administrator — grant org admin to a Google account before/after, and harden the password account (strong unique password; it retains org-level power regardless of project membership).
 
-**34 of 37 criteria fully pass.**
+**35 of 37 criteria fully pass.**
