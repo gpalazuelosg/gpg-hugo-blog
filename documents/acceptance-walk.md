@@ -31,7 +31,7 @@
 | E1 | ✅ PASS | 2026-07-14 post-fix Lighthouse mobile on `https://palazuelos.dev/blog/pascal-s-triangle/`: perf 90, **LCP 1.8s** (< 2.5s budget), FCP 1.4s. Was 4.7s/72 — see bug 2. **Content note:** a 260×240 GIF as cover stays small/low-quality — use a ≥1200px static image for future covers |
 | E2 | ✅ PASS | F3 gate (CI Lighthouse on post template): Performance ≥ 90 green on every PR |
 | E3 | ✅ PASS | Images served from Sanity CDN with `auto=format&w=1200&fit=max`; body images `loading="lazy"`; cover is the hero (eager — correct for LCP) |
-| E4 | ⏳ PENDING (tab-through only) | CI automated half green (pa11y F4, Lighthouse a11y ≥ 95 F3). axe sweep done 2026-07-14 via `@axe-core/cli` on home, `/blog/`, post, `/privacy/`: found 1 serious violation (scrollable code blocks not keyboard-focusable) — fixed in PR #10, prod re-scan **0 violations on all 4 pages**. Remaining: author keyboard tab-through |
+| E4 | ✅ PASS | CI automated half green (pa11y F4, Lighthouse a11y ≥ 95 F3). axe sweep 2026-07-14 via `@axe-core/cli` on home, `/blog/`, post, `/privacy/`: 1 serious violation found (scrollable code blocks not keyboard-focusable) → fixed PR #10 → prod re-scan **0 violations on all 4 pages**. Author keyboard tab-through 2026-07-15: visible focus outlines, code blocks reachable + arrow-scrollable, no focus traps |
 | E5 | ✅ PASS | Unique `<title>`/description/canonical verified on home + post; OG/Twitter tags with cover fallback present |
 | E6 | 🔧 FIXED | Was FAIL (see bug 1). Local build now: home, post, `/blog/`, both legal pages in sitemap; RSS includes post, drafts/future excluded |
 | E7 | ✅ PASS | Preview deployment sends `x-robots-tag: noindex`; prod `robots.txt` = allow all |
@@ -48,9 +48,13 @@
 
 ## Ship blockers remaining
 
-1. ~~E1 re-measure~~ ✅ done 2026-07-14: perf 90, LCP 1.8s (fit=max + domain flip).
-2. ~~E4 axe sweep~~ ✅ done 2026-07-14 (1 serious found → fixed PR #10 → 0 violations); **keyboard tab-through** still pending (author, ~2 min).
-3. ~~E8~~ ✅ done 2026-07-14 (backup in private cloud; automation TODO in README).
-4. ~~C2~~ ✅ done 2026-07-15: email/password member removed (live C6 rehearsal), second owner Gmail added via Google SSO + passkey, PRD §1 decision 16 recorded. Org hardening noted in decision 16.
+None.
 
-**36 of 37 criteria fully pass.** Sole remaining item: E4 keyboard tab-through (author, ~2 min).
+1. ~~E1 re-measure~~ ✅ 2026-07-14: perf 90, LCP 1.8s (fit=max + domain flip).
+2. ~~E4~~ ✅ 2026-07-15: axe sweep (1 serious → fixed PR #10 → 0 violations) + author keyboard tab-through.
+3. ~~E8~~ ✅ 2026-07-14: backup in private cloud; automation TODO in README.
+4. ~~C2~~ ✅ 2026-07-15: email/password member removed (live C6 rehearsal), second owner Gmail via Google SSO + passkey, PRD §1 decision 16.
+
+## Verdict
+
+**All 37 criteria pass (2026-07-15). The MVP meets its acceptance criteria — clear to ship (Day 7).**
