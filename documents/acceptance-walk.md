@@ -4,7 +4,7 @@
 **Method:** programmatic checks (curl/grep/API) where possible; author attestation for Studio/Google-account items; evidence noted per row.
 **Bugs found during the walk** (fixed in the same PR, per the criteria doc's "anything failing is a bug against the spec"):
 1. **E6** — `sitemap.xml` was missing the home page and all posts: `[outputs] home` in `hugo.toml` included `"sitemap"`, which renders the sitemap as a *home-page output* (only direct children) instead of Hugo's site-wide sitemap kind. Fixed by removing it; verified locally (5 URLs incl. post).
-2. **E1** — real post LCP 4.7s / perf 72 (Lighthouse mobile): the 260×240 GIF cover was requested at `w=1200`, upscaling it to 314KB. Fixed `CDN_PARAMS` with `fit=max` (never upscale → 29KB). Re-measure after deploy; also see content note under E1.
+2. **E1** — real post LCP 4.7s / perf 72 (Lighthouse mobile). Two causes, both fixed: (a) the 260×240 GIF cover was requested at `w=1200`, upscaling it to 314KB — fixed with `fit=max` in `CDN_PARAMS` (→29KB, perf 82); (b) Vercel had `www` as the primary domain, so the canonical apex URL 308-redirected cross-host (~900ms of pre-render latency on 4G) — fixed in the Vercel Domains dashboard 2026-07-14 (apex primary, www redirects). Post-fix: **perf 90, LCP 1.8s** on the canonical URL. The redirect flip also un-broke E5's canonical.
 
 | ID | Result | Evidence |
 |----|--------|----------|
@@ -28,7 +28,7 @@
 | D2 | ✅ PASS | Slug auto-generates from title, editable — observed during authoring of both real posts |
 | D3 | ✅ PASS | Real post has no `seo.*`: `<meta description>` falls back to summary, `og:image` falls back to cover image URL (verified in page source) |
 | D4 | ✅ PASS | Schema fields: title, slug, summary, body, coverImage(+alt), publishedAt, seo{metaDesc, ogImage} — no categories/tags/gallery/keywords/author |
-| E1 | 🔧 FIXED, re-measure | Was FAIL: LCP 4.7s / perf 72 on real post (upscaled GIF cover, see bug 2). `fit=max` fix in this PR. **Content note:** a 260×240 GIF as cover stays small/low-quality — use a ≥1200px static image for future covers |
+| E1 | ✅ PASS | 2026-07-14 post-fix Lighthouse mobile on `https://palazuelos.dev/blog/pascal-s-triangle/`: perf 90, **LCP 1.8s** (< 2.5s budget), FCP 1.4s. Was 4.7s/72 — see bug 2. **Content note:** a 260×240 GIF as cover stays small/low-quality — use a ≥1200px static image for future covers |
 | E2 | ✅ PASS | F3 gate (CI Lighthouse on post template): Performance ≥ 90 green on every PR |
 | E3 | ✅ PASS | Images served from Sanity CDN with `auto=format&w=1200&fit=max`; body images `loading="lazy"`; cover is the hero (eager — correct for LCP) |
 | E4 | ⏳ PENDING (manual half) | Automated half green (pa11y F4, Lighthouse a11y ≥ 95 F3; landmarks + focus styles in `a11y.css`). Manual axe DevTools sweep + keyboard tab-through not yet done |
@@ -48,9 +48,9 @@
 
 ## Ship blockers remaining
 
-1. **E1 re-measure** after this PR deploys (expected to pass with `fit=max`; if not, replace the GIF cover).
+1. ~~E1 re-measure~~ ✅ done 2026-07-14: perf 90, LCP 1.8s (fit=max + domain flip).
 2. **E4 manual half** — axe DevTools sweep + keyboard tab-through (~10 min, author).
 3. **E8 storage half** — copy the export to the private cloud folder (~1 min, author).
 4. **C2** — remove the second admin (doubles as C6 live rehearsal) or record the PRD amendment.
 
-Everything else: **33 of 37 criteria fully pass.**
+**34 of 37 criteria fully pass.**
