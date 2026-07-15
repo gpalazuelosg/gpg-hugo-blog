@@ -1,6 +1,6 @@
 # MVP Acceptance Criteria — Technical Blog & Reviews Site
 
-**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.5 (G3 amended per §1 decision 14)
+**Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.7 (G3 amended per §1 decision 14; C2 per decision 16)
 **Status:** Binding — the spec is closed; every MUST item below gates MVP ship
 **How to use:** Every criterion is a pass/fail check with a stated verification method. The MVP ships when every MUST item passes. Anything failing is a bug against the spec; anything desirable but absent from this list is an Iteration 1+ candidate, not a fix.
 
@@ -31,7 +31,7 @@
 | ID | Criterion | Verify by | PRD ref |
 |----|-----------|-----------|---------|
 | C1 | Sanity Studio is deployed at `studio.palazuelos.dev` (or `/studio`) and requires login. | Open Studio URL in a private browser window → login wall, no content visible. | §2.2 |
-| C2 | The Sanity project member list contains exactly one member: the confirmed admin email, with `administrator` role. | Screenshot / check `sanity.io/manage` members page. | §2.2.1-1 |
+| C2 | The Sanity project member list contains only owner-controlled Google SSO accounts (no email/password members), plus read-only robot token principals (amended per PRD §1 decision 16). | Check `sanity.io/manage` members page / Sanity projects API: every non-robot member has provider `google`. | §2.2.1-1, §1.16 |
 | C3 | A Google account that is **not** a project member can authenticate with Google SSO but sees "no access" — it cannot read or write content. | Test with a second Google account. | §2.2.1 |
 | C4 | The admin Google account has a passkey or hardware security key enrolled as 2FA. | Check Google account security settings. | §2.2.1-2 |
 | C5 | The public Hugo site contains no login form, registration form, or password reset anywhere. | Manual sweep + grep built output for `<form` occurrences other than none expected. | §2.2.1-5 |

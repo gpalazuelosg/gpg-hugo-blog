@@ -19,11 +19,11 @@
 | B4 | ✅ PASS | `curl` non-existent URL → HTTP 404 with site 404 layout |
 | B5 | ✅ PASS | Live test 2026-07-13: post future-dated to 2026-07-18 vanished from post URL (404), `/blog/`, sitemap, and RSS on the webhook-triggered rebuild |
 | C1 | ✅ PASS | `https://palazuelos.sanity.studio` live; content requires login (see C3) |
-| C2 | ⚠️ DEVIATION | 3 members: 2 human administrators + 1 robot viewer (the read token — expected). Both human admins are owner-controlled Google accounts (second added 2026-07-11, same person). **Open item:** remove the extra admin in sanity.io/manage *or* record a PRD §1 decision amending to "owner-controlled accounts only". No third-party access either way |
+| C2 | ✅ PASS | Resolved 2026-07-15 (PRD §1 decision 16): the deviation was the owner's email/password login coexisting as a second member (Sanity treats each identity provider as a distinct account). Password member removed; second owner Gmail added via Google SSO + passkey. API-verified: every non-robot member now has provider `google` |
 | C3 | ✅ PASS | Author-tested: non-member Google account authenticates but sees "no access" |
 | C4 | ✅ PASS | Author attests passkey enrolled on the Studio Google account |
 | C5 | ✅ PASS | Zero `<form` occurrences in the entire built output |
-| C6 | ✅ PASS | Criterion's defer path: revocation procedure documented (README runbook §7); executing it live doubles with resolving C2 |
+| C6 | ✅ PASS | Rehearsed **live** 2026-07-15: the email/password member was removed via sanity.io/manage (C2 resolution); procedure documented in README runbook §7. Removed account's Studio session terminates on next load; its CLI token was confirmed superseded |
 | D1 | ✅ PASS | `blogPost.ts`: 10 validation rules covering all required fields incl. cover alt + uploaded asset (commit b0345b3); invalid-publish attempts done in Task 2.1 |
 | D2 | ✅ PASS | Slug auto-generates from title, editable — observed during authoring of both real posts |
 | D3 | ✅ PASS | Real post has no `seo.*`: `<meta description>` falls back to summary, `og:image` falls back to cover image URL (verified in page source) |
@@ -51,6 +51,6 @@
 1. ~~E1 re-measure~~ ✅ done 2026-07-14: perf 90, LCP 1.8s (fit=max + domain flip).
 2. ~~E4 axe sweep~~ ✅ done 2026-07-14 (1 serious found → fixed PR #10 → 0 violations); **keyboard tab-through** still pending (author, ~2 min).
 3. ~~E8~~ ✅ done 2026-07-14 (backup in private cloud; automation TODO in README).
-4. **C2** — plan agreed: remove the email/password project member (doubles as C6 live rehearsal), add second owner Gmail via Google SSO + passkey, record PRD amendment. Org-level note: the email/password account is the sole *organization* administrator — grant org admin to a Google account before/after, and harden the password account (strong unique password; it retains org-level power regardless of project membership).
+4. ~~C2~~ ✅ done 2026-07-15: email/password member removed (live C6 rehearsal), second owner Gmail added via Google SSO + passkey, PRD §1 decision 16 recorded. Org hardening noted in decision 16.
 
-**35 of 37 criteria fully pass.**
+**36 of 37 criteria fully pass.** Sole remaining item: E4 keyboard tab-through (author, ~2 min).
