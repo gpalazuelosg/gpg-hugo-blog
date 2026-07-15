@@ -14,3 +14,10 @@
 .chroma .cpf {
     color: #a0a6bf;
 }
+
+/* Code blocks receive tabindex="0" (extend_footer.html) so keyboard users
+   can scroll them; give the focused block a visible outline (WCAG 2.4.7). */
+.post-content pre code:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: -2px;
+}

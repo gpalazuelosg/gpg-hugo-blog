@@ -1,0 +1,9 @@
+{{- /* PaperMod makes the <code> inside code blocks the horizontal scroll
+     container, and scrollable regions must be keyboard-reachable (axe:
+     scrollable-region-focusable, serious — acceptance E4). Focus style
+     lives in assets/css/extended/. */}}
+<script>
+  document.querySelectorAll('.post-content pre code').forEach(function (el) {
+    el.setAttribute('tabindex', '0')
+  })
+</script>
