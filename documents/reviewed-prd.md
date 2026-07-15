@@ -1,7 +1,7 @@
 # Reviewed PRD — Technical Blog & Reviews Site
 
-**Document Version:** 2.6
-**Last Updated:** 2026-07-13
+**Document Version:** 2.7
+**Last Updated:** 2026-07-15
 **Supersedes:** [initial-technical-website-specification.md](./initial-technical-website-specification.md) (v1.0, 2026-01-20)
 **Project Status:** Spec closed — ready for Day 1
 **Acceptance criteria:** [acceptance-criteria.md](./acceptance-criteria.md)
@@ -50,6 +50,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 13 | Workflow discipline (v2.4)     | **PR-flow enforced starting Day 3.** Days 1–2 allowed direct-to-`main` for bootstrap scaffolding; Day 3 onward every code change lands via PR with all 4 CI gates green. Admin bypass reserved for genuine emergencies (documented in commit) | Days 1–2 changes (Hugo scaffold, CI wiring, Studio scaffold) don't exercise the CI gates meaningfully — the gates test Hugo output and a11y, neither of which those commits touched. Day 3 introduces the content pipeline into Hugo's build path; from that point the gates start catching real regressions and F5 must be honored, not bypassed |
 | 14 | Webhook authentication (v2.5)  | **The Vercel Deploy Hook URL itself is the capability secret; no signature validation in MVP.** `SANITY_WEBHOOK_SECRET` (§3.3 of v2.4) has no MVP consumer and is not provisioned. It returns in Iteration 3, when serverless functions can validate Sanity's `sanity-webhook-signature` header | Spec deviation discovered during Day 5 implementation: Vercel Deploy Hooks accept any POST to the hook URL and offer no signature check to configure. Mitigation: the URL is stored only in Sanity's webhook config (never in the repo); worst case for a leaked URL is a spurious rebuild of already-public content; rotation = delete and recreate the deploy hook |
 | 15 | Analytics vendor (v2.6)        | **Vercel Web Analytics** (closes the §1 decision-8 / Appendix-A "pick on Day 6" item). Injected via `layouts/_partials/extend_head.html`, gated on `VERCEL_ENV=production` so previews, CI, and local builds emit no script | Free on the existing Vercel Hobby plan vs $9/mo for Plausible; cookie-free and GDPR-friendly like Plausible; no new vendor account. Retention/feature limits are acceptable at MVP traffic — revisit if a public dashboard or long-horizon stats are wanted (that would mean Plausible) |
+| 16 | Member allowlist scope (v2.7)  | **§2.2.1-1 amended: the project member list may contain multiple owner-controlled Google SSO accounts** (each with passkey 2FA per §2.2.1-2), plus read-only robot token principals. Email/password (provider `sanity`) members are prohibited. As of 2026-07-15 the list holds two owner Google accounts + the Viewer read token | The Day-2 setup had silently created a second member: Sanity treats each identity provider as a distinct account, so the owner's email+password login (used for project creation/CLI) coexisted with their Google SSO login — same inbox, two accounts, and the password one bypassed the passkey requirement. Discovered by the Task 6.3 acceptance walk (C2). Resolution: password member removed (live C6 rehearsal), second owner Gmail added via Google SSO. Org-level note: the password account remains the Sanity *organization* admin; hardened and kept out of daily use |
 
 ---
 
@@ -81,7 +82,7 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 
 **MVP requirements:**
 
-1. Sanity project members list contains only the repository owner's Google account at launch. Role: `administrator`. (The concrete address is deliberately not recorded in this public repo — the authoritative list is `sanity.io/manage`.)
+1. Sanity project members list contains only owner-controlled **Google SSO** accounts (amended by §1 decision 16; one or more, each `administrator` or `editor`), plus read-only robot token principals. Email/password members are prohibited. (Concrete addresses are deliberately not recorded in this public repo — the authoritative list is `sanity.io/manage`.)
 2. That Google account has a **hardware security key or passkey enrolled as 2FA** — this is the single strongest control and closes the phishing vector.
 3. Recommended: enroll the Google account in [Google Advanced Protection Program](https://landing.google.com/advancedprotection/) for aggressive phishing filters and OAuth app restrictions.
 4. **Access revocation procedure:** remove the member from `sanity.io/manage` → session terminates on next Studio load. Documented in the Day-6 runbook (§8).
