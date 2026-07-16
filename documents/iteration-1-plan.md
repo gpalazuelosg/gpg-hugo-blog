@@ -59,7 +59,24 @@ Ops carry-ins (both triggered by MVP findings, both now PRD §1 decisions):
 | I7 | A future-dated post appears on prod within 24h of its `publishedAt` with no manual action (live test: Docker post, 2026-07-18) | Check prod on/after 07-18 |
 | I8 | All MVP gates (F1–F4) stay green throughout; MVP criteria remain satisfied except A5/B2/D4, which are amended (not violated) per PRD §6 | CI + spot-check of MVP walk rows |
 
-## 4. Risks
+## 4. Walk Results (task 3.3, 2026-07-16)
+
+All six build tasks shipped: PRs #16 (daily rebuild), #17 (backup workflow), #18 (schema), #19 (taxonomies), #20 (search), #21 (related + reading time). All F1–F4 gates green on every PR.
+
+| ID | Result | Evidence |
+|----|--------|----------|
+| I1 | ✅ PASS (mechanics) | `/search/` → 200 on prod, Search in main menu, `/index.json` contains the post incl. distinctive body words. Author's confirming query: pending (~30s) |
+| I2 | ✅ PASS | Fields optional in schema (validated, deployed); pre-existing posts unaffected — prod builds unchanged for untagged content |
+| I3 | ⏳ CONTENT-PENDING | Mechanics verified: CI/local `--buildDrafts` builds render `/tags/ci/`, `/tags/fixture/` and tag chips via the tagged fixture. No *published* post carries tags yet — passes live once the author tags posts in Studio |
+| I4 | ⏳ CONTENT-PENDING | Mechanics verified in all three shapes locally: shared tag → "Related posts"; no shared tags → "More posts" (newest-posts fallback — Hugo's date index only matches same-day posts, so the fallback is explicit in the template); single post → no section. Live check follows I3 |
+| I5 | ✅ PASS | Prod post shows "2 min" |
+| I6 | ✅ PASS | `production-2026-07-16.tar.gz` in the private backups repo via `workflow_dispatch` run (also the pre-migration export); monthly cron armed |
+| I7 | ✅ mechanism / ⏳ live | Manual dispatch → deploy hook fired → Vercel deploy succeeded. Live test: the Docker post (publishedAt 2026-07-18) must appear without manual action by 2026-07-19 06:00 UTC |
+| I8 | ✅ PASS | F1–F4 green on PRs #16–#21; prod sitemap healthy (8 URLs incl. `/search/`); MVP criteria spot-checked (post 200, legal pages, RSS) |
+
+**Close-out conditions:** author tags the published posts (flips I3/I4 live), runs one search query (I1 confirmation), and the Docker post self-publishes on 07-18 (I7 live). No code work remains.
+
+## 5. Risks
 
 | Risk | Mitigation |
 |------|------------|
