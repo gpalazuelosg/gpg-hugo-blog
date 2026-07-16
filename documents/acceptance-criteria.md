@@ -14,14 +14,14 @@
 | A2 | Editing the article in Sanity Studio and hitting Publish results in the change being live in production within ≤5 minutes, with no manual step. | Timed test: edit title in Studio → Publish → stopwatch until change visible in prod. | §0.2, §3.1 |
 | A3 | A preview environment exists that reflects unmerged changes: opening a PR against `main` produces a Vercel Preview URL rendering that branch. | Open a trivial PR (e.g., footer text change); confirm the Vercel preview URL shows the change while prod does not. | §0.3, §3.2 |
 | A4 | Privacy Policy and Affiliate Disclosure pages are live at `/privacy/` and `/disclosure/`. | Open both URLs in prod; both linked from the site footer. | §0.4, §2.1 |
-| A5 | **Anti-goal check:** no search, no analytics dashboards beyond the chosen provider, no click tracking, no reviews pages, no affiliate-links pages exist in the MVP. | Manual sweep of nav, footer, and sitemap.xml for out-of-scope routes. | §0.5, §0 anti-goals |
+| A5 | **Anti-goal check:** no click tracking, no reviews pages, no affiliate-links pages, no analytics dashboards beyond the chosen provider. *(Amended by Iteration 1, PRD §6: site search and taxonomy pages are now in scope.)* | Manual sweep of nav, footer, and sitemap.xml for out-of-scope routes. | §0.5, §0 anti-goals, §6 |
 
 ## B. Public Pages (PRD §2.1)
 
 | ID | Criterion | Verify by | PRD ref |
 |----|-----------|-----------|---------|
 | B1 | Home page shows author intro, latest 3 published posts, and social links. | Visual check; publish a 4th post and confirm the oldest drops off the home list on next deploy. | §2.1 |
-| B2 | `/blog/` lists all published posts in reverse-chronological order by `publishedAt`. No category/tag filters present. | Visual check with ≥2 posts having different `publishedAt`. | §2.1 |
+| B2 | `/blog/` lists all published posts in reverse-chronological order by `publishedAt`. *(Iteration 1 adds tag/category term pages; the listing itself stays chronological.)* | Visual check with ≥2 posts having different `publishedAt`. | §2.1, §6 |
 | B3 | A blog post page renders every Portable Text block type in the schema: paragraph, headings, code block with syntax highlighting language, image, list. | Author one test post containing all block types; inspect rendered output. | §2.1, §2.3 |
 | B4 | Requesting a non-existent URL returns HTTP 404 with the site's 404 page. | `curl -I https://palazuelos.dev/does-not-exist/` → 404; page renders with site chrome. | §2.1 |
 | B5 | A post in draft state (no `publishedAt`, or `publishedAt` in the future) does not appear anywhere on the public site. | Create a draft post; confirm absent from home, `/blog/`, sitemap, and RSS after a deploy. | §2.2, §2.3 |
@@ -44,7 +44,7 @@
 | D1 | `blogPost` schema enforces required fields: `title`, `slug`, `summary` (≤200 chars), `body`, `coverImage` with required alt text, `publishedAt`. Publishing without any of them is blocked by Studio validation. | Attempt to publish a post missing each required field in turn. | §2.3 |
 | D2 | `slug` auto-generates from title and remains editable. | Create post in Studio, observe slug field. | §2.3 |
 | D3 | `seo.metaDesc` and `seo.ogImage` are optional; when absent, rendered pages fall back to `summary` and `coverImage` respectively. | Publish a post without SEO fields; inspect `<meta name="description">` and `og:image` in output. | §2.3 |
-| D4 | **Anti-goal check:** schema has no categories, tags, gallery, keywords, or author fields. | Review schema file. | §2.3 deferred |
+| D4 | **Anti-goal check:** schema has no gallery, keywords, or author fields. *(Amended by Iteration 1, PRD §6: optional `tags` and `categories` added per plan task 2.1.)* | Review schema file. | §2.3 deferred, §6 |
 
 ## E. Non-Functional (PRD §4)
 

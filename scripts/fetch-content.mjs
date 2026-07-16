@@ -46,6 +46,8 @@ const QUERY = `
     "slug": slug.current,
     summary,
     publishedAt,
+    tags,
+    categories,
     coverImage{ asset->{url}, alt },
     body[]{
       ...,
@@ -123,6 +125,14 @@ function buildFrontMatter(post) {
     `  image: ${escapeYaml(coverUrl)}`,
     `  alt: ${escapeYaml(post.coverImage.alt)}`,
   ]
+  // Optional taxonomies (iteration-1-plan task 2.2) — omit the key entirely
+  // when unset so Hugo sees the same front matter shape as pre-Iteration-1.
+  for (const taxo of ['tags', 'categories']) {
+    const values = (post[taxo] ?? []).filter((v) => v && String(v).trim())
+    if (values.length > 0) {
+      lines.push(`${taxo}:`, ...values.map((v) => `  - ${escapeYaml(v)}`))
+    }
+  }
   // seo.ogImage falls back to coverImage when absent (D3). PaperMod uses the
   // cover.image for the OG tag by default, so we only add an override when
   // ogImage is set AND differs from the cover.

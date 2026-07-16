@@ -8,9 +8,12 @@ theme = "PaperMod"
 # robots.txt is shipped statically from static/robots.txt (PRD §4.3)
 enableRobotsTXT = false
 
-# No categories/tags in MVP (PRD §2.3 deferred fields, acceptance A5/D4);
-# also stops Hugo emitting empty /tags/ and /categories/ pages
-disableKinds = ["taxonomy", "term"]
+# Iteration 1 (PRD §6, plan task 2.2): tags + categories enabled.
+# MVP had disableKinds = ["taxonomy", "term"] per the old A5/D4 anti-goals,
+# amended by the iteration-1 plan.
+[taxonomies]
+tag = "tags"
+category = "categories"
 
 [pagination]
 pagerSize = 10
