@@ -1,6 +1,6 @@
 # Reviewed PRD — Technical Blog & Reviews Site
 
-**Document Version:** 2.7
+**Document Version:** 2.8
 **Last Updated:** 2026-07-15
 **Supersedes:** [initial-technical-website-specification.md](./initial-technical-website-specification.md) (v1.0, 2026-01-20)
 **Project Status:** Spec closed — ready for Day 1
@@ -51,6 +51,9 @@ The v1.0 spec left several decisions open or contradictory. These are now closed
 | 14 | Webhook authentication (v2.5)  | **The Vercel Deploy Hook URL itself is the capability secret; no signature validation in MVP.** `SANITY_WEBHOOK_SECRET` (§3.3 of v2.4) has no MVP consumer and is not provisioned. It returns in Iteration 3, when serverless functions can validate Sanity's `sanity-webhook-signature` header | Spec deviation discovered during Day 5 implementation: Vercel Deploy Hooks accept any POST to the hook URL and offer no signature check to configure. Mitigation: the URL is stored only in Sanity's webhook config (never in the repo); worst case for a leaked URL is a spurious rebuild of already-public content; rotation = delete and recreate the deploy hook |
 | 15 | Analytics vendor (v2.6)        | **Vercel Web Analytics** (closes the §1 decision-8 / Appendix-A "pick on Day 6" item). Injected via `layouts/_partials/extend_head.html`, gated on `VERCEL_ENV=production` so previews, CI, and local builds emit no script | Free on the existing Vercel Hobby plan vs $9/mo for Plausible; cookie-free and GDPR-friendly like Plausible; no new vendor account. Retention/feature limits are acceptable at MVP traffic — revisit if a public dashboard or long-horizon stats are wanted (that would mean Plausible) |
 | 16 | Member allowlist scope (v2.7)  | **§2.2.1-1 amended: the project member list may contain multiple owner-controlled Google SSO accounts** (each with passkey 2FA per §2.2.1-2), plus read-only robot token principals. Email/password (provider `sanity`) members are prohibited. As of 2026-07-15 the list holds two owner Google accounts + the Viewer read token | The Day-2 setup had silently created a second member: Sanity treats each identity provider as a distinct account, so the owner's email+password login (used for project creation/CLI) coexisted with their Google SSO login — same inbox, two accounts, and the password one bypassed the passkey requirement. Discovered by the Task 6.3 acceptance walk (C2). Resolution: password member removed (live C6 rehearsal), second owner Gmail added via Google SSO. Org-level note: the password account remains the Sanity *organization* admin; hardened and kept out of daily use |
+| 17 | Search implementation (v2.8)   | **PaperMod's built-in Fuse.js search**, amending §6 Iteration 1's original "Pagefind" | §6 was written before decision (§9.3) committed to PaperMod, whose native search needs only a JSON output + one search page and inherits the theme's styling. Pagefind would add a post-build step and unthemed UI for no benefit at <100 posts; it remains the documented fallback if search degrades at scale |
+| 18 | Backup automation (v2.8)       | **Monthly GitHub Actions cron exports the dataset to a private `gpg-blog-backups` repo** (plus `workflow_dispatch` for pre-schema-change exports, §4.4). Secrets: existing Viewer robot token + a fine-grained PAT scoped to the backups repo | Trigger condition from the Task 6.2 TODO fired: Iteration 1's tags/categories is the first schema change. Public-repo workflow artifacts were ruled out (downloadable by anyone; exports contain unpublished drafts). A private repo is versioned, free, and needs one PAT — simpler than rclone-to-cloud-drive credentials |
+| 19 | Scheduled-post rebuilds (v2.8) | **Daily GitHub Actions cron POSTs the Vercel deploy hook**, so future-dated posts go live within 24h of `publishedAt` | Discovered in Task 5.1: builds are event-driven, so a future `publishedAt` never self-publishes. The hook URL enters Actions secrets — same capability-secret trust level as Sanity's webhook config (decision 14). Cost: ~30 builds/mo, negligible on Hobby |
 
 ---
 
@@ -214,12 +217,13 @@ If a day slips, cut polish first, then the home page's "latest posts" section (l
 
 Ordered by cost/value. Each iteration should ship independently in 1–3 days.
 
-### Iteration 1 — "Make it findable" (~3 days)
+### Iteration 1 — "Make it findable" (~3 days) — IN PROGRESS, see [iteration-1-plan.md](./iteration-1-plan.md)
 
-- Pagefind integration (build step + `<input>` on `/blog/`)
+- Site search — PaperMod built-in Fuse.js (amended from Pagefind by §1 decision 17)
 - Categories + tags on `blogPost` (schema migration + taxonomy pages)
 - Related posts on blog post template (Hugo `.Related`)
 - Reading time estimate
+- Ops carry-ins from the MVP walk: backup automation (§1 decision 18), daily rebuild cron for scheduled posts (§1 decision 19)
 
 ### Iteration 2 — "Add reviews" (~4 days)
 
