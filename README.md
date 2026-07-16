@@ -118,14 +118,10 @@ Then copy the archive to the designated **private** cloud folder (not this
 repo). Run before every schema change, and monthly once the post count grows
 (PRD §4.4). Restore path: `npx sanity dataset import <file> <dataset>`.
 
-> **TODO — automate this (owner: repo admin, trigger: ≥10 posts or first
-> schema change, whichever comes first).** Proposed shape: a monthly
-> GitHub Actions cron job that runs `sanity dataset export` and uploads the
-> archive off-GitHub — via `rclone` to OneDrive/Google Drive (needs an
-> rclone config stored as an Actions secret) or, simpler, a push to a small
-> **private** backups repo. Workflow artifacts on this public repo are NOT
-> an option: they are downloadable by anyone and the export contains
-> unpublished drafts. Requires a `SANITY_API_READ_TOKEN` Actions secret.
+**Automated** (PRD §1 decision 18): the [Sanity backup workflow](.github/workflows/backup.yml)
+runs monthly and pushes the archive to the private `gpg-blog-backups` repo.
+Before a schema change, trigger it manually: GitHub → Actions → "Sanity
+backup" → Run workflow (or the CLI: `gh workflow run backup.yml`).
 
 ### 7. Revoke Studio access (PRD §2.2.1-4)
 

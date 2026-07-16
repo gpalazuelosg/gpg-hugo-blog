@@ -1,0 +1,58 @@
+# Sanity dataset backup — PRD §1 decision 18, §4.4 (iteration-1-plan task 1.1).
+#
+# Monthly cron + manual dispatch (run it before every schema change). Exports
+# the production dataset (documents incl. drafts + assets) and pushes the
+# archive to the private gpalazuelosg/gpg-blog-backups repo.
+#
+# Secrets:
+#   SANITY_EXPORT_TOKEN  — the project's Viewer robot token (read-only)
+#   BACKUP_REPO_SSH_KEY  — deploy key with write access to the backups repo
+#                          only (tighter scope than a PAT)
+name: Sanity backup
+
+on:
+  schedule:
+    - cron: "0 5 1 * *" # 05:00 UTC, 1st of each month
+  workflow_dispatch: {}
+
+jobs:
+  export-and-store:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/studio/package-lock.json
+
+      - name: Install studio dependencies
+        working-directory: src/studio
+        run: npm ci --no-audit --no-fund
+
+      - name: Export production dataset
+        working-directory: src/studio
+        run: npx sanity dataset export production "$RUNNER_TEMP/backup.tar.gz" --overwrite
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_EXPORT_TOKEN }}
+          SANITY_STUDIO_PROJECT_ID: rar2ekbv
+          SANITY_STUDIO_DATASET: production
+
+      - name: Push archive to private backups repo
+        run: |
+          KEY="$RUNNER_TEMP/deploy_key"
+          printf '%s\n' "$SSH_KEY" > "$KEY"
+          chmod 600 "$KEY"
+          export GIT_SSH_COMMAND="ssh -i $KEY -o StrictHostKeyChecking=accept-new"
+          git clone --depth 1 git@github.com:gpalazuelosg/gpg-blog-backups.git "$RUNNER_TEMP/backups"
+          STAMP="$(date -u +%F)"
+          cp "$RUNNER_TEMP/backup.tar.gz" "$RUNNER_TEMP/backups/production-$STAMP.tar.gz"
+          cd "$RUNNER_TEMP/backups"
+          git config user.name "backup-workflow"
+          git config user.email "noreply@github.com"
+          git add .
+          git commit -m "Backup production-$STAMP (run ${{ github.run_id }})"
+          git push
+        env:
+          SSH_KEY: ${{ secrets.BACKUP_REPO_SSH_KEY }}
