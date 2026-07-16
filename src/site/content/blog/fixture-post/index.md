@@ -7,6 +7,10 @@ description: "CI fixture post for Lighthouse, pa11y, and htmltest gates."
 cover:
   image: "cover.svg"
   alt: "Placeholder cover image: gray rectangle with the word fixture"
+# Iteration 1: fixture carries taxonomies so CI's gates measure the
+# tag-bearing post template and the /tags/ term pages (iteration-1-plan §4).
+tags: ["fixture", "ci"]
+categories: ["testing"]
 ---
 
 This post is the **CI measurement target** (implementation-plan §3.5). It is
