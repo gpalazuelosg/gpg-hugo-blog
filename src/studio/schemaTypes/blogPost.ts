@@ -104,6 +104,22 @@ export const blogPost = defineType({
       description: 'Post is public when this is set and not in the future.',
       validation: (rule) => rule.required(),
     }),
+    // Iteration 1 (PRD §6, iteration-1-plan task 2.1): both optional —
+    // publishing must keep working without them (acceptance I2).
+    defineField({
+      name: 'tags',
+      type: 'array',
+      of: [defineArrayMember({type: 'string'})],
+      options: {layout: 'tags'},
+      description: 'Optional. Drive /tags/ pages and related-post matching.',
+    }),
+    defineField({
+      name: 'categories',
+      type: 'array',
+      of: [defineArrayMember({type: 'string'})],
+      options: {layout: 'tags'},
+      description: 'Optional. Broader grouping than tags; drives /categories/ pages.',
+    }),
     defineField({
       name: 'seo',
       title: 'SEO',
