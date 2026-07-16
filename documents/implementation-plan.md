@@ -3,7 +3,7 @@
 **Derived from:** [reviewed-prd.md](./reviewed-prd.md) v2.4 (spec closed)
 **Revision note:** v1.2 (2026-07-11) — PR flow becomes mandatory from Day 3 per PRD §1 decision 13; v1.1 restructured repo to `src/site` + `src/studio` per PRD §1 decision 11.
 **Verifies against:** [acceptance-criteria.md](./acceptance-criteria.md)
-**Status:** Draft for review — becomes binding once committed
+**Status:** ✅ **COMPLETE — MVP shipped 2026-07-15.** All 37 acceptance criteria pass ([acceptance-walk.md](./acceptance-walk.md)); Day 7 announcement made by the author. Future work: PRD §6 iteration roadmap.
 **Rule of the road:** if implementation forces a decision this plan doesn't cover, record it in the PRD §1 decisions table *first*, then build it.
 
 ---
