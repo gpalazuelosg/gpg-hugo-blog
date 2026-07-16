@@ -23,8 +23,9 @@ author = "Gerardo Palazuelos"
 description = "Technical blog on software engineering"
 defaultTheme = "auto"
 ShowCodeCopyButtons = true
-# Deferred to Iteration 1 per PRD §6 — do not enable for MVP
-ShowReadingTime = false
+# Enabled in Iteration 1 (plan task 3.2)
+ShowReadingTime = true
+# Not in any planned iteration — enable deliberately if ever wanted
 ShowShareButtons = false
 
 [params.homeInfoParams]
@@ -55,6 +56,26 @@ weight = 10
 name = "Search"
 url = "/search/"
 weight = 20
+
+# Related posts (iteration-1-plan task 3.2): tags dominate, categories help,
+# date is the fallback so an untagged post still gets suggestions. Threshold
+# kept low deliberately — on a small site "something related" beats nothing.
+[related]
+includeNewer = true
+threshold = 20
+toLower = true
+
+[[related.indices]]
+name = "tags"
+weight = 100
+
+[[related.indices]]
+name = "categories"
+weight = 60
+
+[[related.indices]]
+name = "date"
+weight = 10
 
 [markup.highlight]
 noClasses = false
