@@ -1,0 +1,23 @@
+{{- /* Related posts (iteration-1-plan task 3.2, acceptance I4). PaperMod
+     calls this after the post body, before the tag footer. Blog posts only —
+     legal pages also render through single.html. */}}
+{{- if eq .Section "blog" }}
+{{- $related := site.RegularPages.Related . | first 3 }}
+{{- $heading := "Related posts" }}
+{{- if not $related }}
+  {{- /* Hugo's date index only matches same-day posts, so an untagged post
+       would get nothing — fall back to the newest other posts (I4). */}}
+  {{- $related = where site.RegularPages "Section" "blog" | complement (slice .) | first 3 }}
+  {{- $heading = "More posts" }}
+{{- end }}
+{{- with $related }}
+<nav class="related-posts" aria-labelledby="related-heading">
+  <h2 id="related-heading">{{ $heading }}</h2>
+  <ul>
+    {{- range . }}
+    <li><a href="{{ .Permalink }}">{{ .Title }}</a></li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end }}
+{{- end }}
