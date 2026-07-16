@@ -1,0 +1,25 @@
+# Daily production rebuild — PRD §1 decision 19 (iteration-1-plan task 1.2).
+#
+# Builds are otherwise event-driven (Sanity webhook, git push), so a post
+# whose publishedAt arrives never self-publishes. One rebuild per day makes
+# scheduled posts live within 24h of their timestamp.
+#
+# VERCEL_DEPLOY_HOOK is the capability secret (PRD §1 decision 14) — it lives
+# here and in Sanity's webhook config, never in the repo.
+name: Daily rebuild
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC daily
+  workflow_dispatch: {}
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST Vercel deploy hook
+        run: |
+          curl --fail --silent --show-error -X POST "$DEPLOY_HOOK" \
+            | grep -o '"state":"[A-Z]*"'
+        env:
+          DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
